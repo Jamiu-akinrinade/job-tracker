@@ -21,20 +21,28 @@ function JobSearch() {
   const [saved, setSaved] = useState({})
 
   const handleSearch = async () => {
-    if (!query.trim()) return
-    setLoading(true)
-    setError("")
-    setResults([])
+  if (!query.trim()) return
+  setLoading(true)
+  setError("")
+  setResults([])
 
-    try {
-      const data = await searchJobs(query, country)
-      setResults(data)
-    } catch (err) {
-      setError("Failed to fetch jobs. Check your API keys or try again.")
-    } finally {
-      setLoading(false)
+  try {
+    const data = await searchJobs(query, country)
+    setResults(data)
+  } catch (err) {
+    if (country === "ng") {
+      setError("Adzuna doesn't support Nigerian listings yet. Try the Remote Jobs tab for worldwide remote roles you can apply to from Nigeria 🌍")
+    } else if (err.message.includes("401")) {
+      setError("Authentication error. Please try again later.")
+    } else if (err.message.includes("404")) {
+      setError("No results found for that search. Try a different term or country.")
+    } else {
+      setError("Something went wrong. Please check your connection and try again.")
     }
+  } finally {
+    setLoading(false)
   }
+}
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") handleSearch()
