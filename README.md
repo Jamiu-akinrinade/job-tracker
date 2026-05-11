@@ -1,18 +1,47 @@
-# React + Vite
+# Job Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-featured job application tracker built with React. Track your applications 
+on a Kanban board, search live job listings, and find remote roles worldwide.
 
-Currently, two official plugins are available:
+🔗 Live Demo: https://job-tracker-phi-fawn.vercel.app
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
 
-## React Compiler
+- Kanban board with four stages — Applied, Interview, Offer, Rejected
+- Stats dashboard showing real-time application counts
+- Search and filter jobs by company, role, or status
+- Live job search powered by Adzuna API
+- Remote jobs search powered by Remotive API (no location restriction)
+- LocalStorage persistence — data survives page refreshes
+- Responsive design for mobile and desktop
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+## Tech Stack
 
-Note: This will impact Vite dev & build performances.
+- React 18 (Vite)
+- React Context API for global state management
+- Custom useLocalStorage hook for persistence
+- Adzuna REST API for live job listings
+- Remotive REST API for remote jobs
+- Plain CSS with BEM naming convention
+- Deployed on Vercel
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1. Clone the repo
+   git clone https://github.com/YOUR_USERNAME/job-tracker.git
+
+2. Install dependencies
+   npm install
+
+3. Create a .env file in the root
+   VITE_ADZUNA_APP_ID=your_app_id
+   VITE_ADZUNA_APP_KEY=your_app_key
+
+4. Start the dev server
+   npm run dev
+
+## Architecture Decisions
+
+- Context API over Redux — app complexity doesn't justify Redux overhead
+- localStorage over a backend — keeps the app frontend-only and instantly deployable
+- Vite proxy in dev, Vercel rewrites in production — handles CORS without exposing keys
