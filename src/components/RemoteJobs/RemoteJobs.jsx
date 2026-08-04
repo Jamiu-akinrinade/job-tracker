@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useJobs } from "../../context/JobContext"
 import { searchRemoteJobs, REMOTIVE_CATEGORIES } from "../../utils/remotiveApi"
+import {BsGlobe2} from "react-icons/bs"
 import "./RemoteJobs.css"
 
 function RemoteJobs() {
@@ -60,7 +61,7 @@ function RemoteJobs() {
       <div className="remote-jobs__header">
         <h2 className="remote-jobs__title">Remote Jobs</h2>
         <p className="remote-jobs__subtitle">
-          Find remote roles worldwide — apply from anywhere including Nigeria 🌍
+          Find remote roles worldwide — apply from anywhere including Nigeria 
         </p>
       </div>
 
@@ -127,7 +128,8 @@ function RemoteJobs() {
 
                 <div className="remote-jobs__tags">
                   <span className="remote-jobs__tag remote-jobs__tag--green">
-                    🌍 Remote
+                    <BsGlobe2 /> 
+                     Remote
                   </span>
                   {result.candidate_required_location && (
                     <span className="remote-jobs__tag">

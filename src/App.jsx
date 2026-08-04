@@ -6,6 +6,8 @@ import StatsBar from "./components/Dashboard/StatsBar"
 import SearchBar from "./components/UI/SearchBar"
 import JobSearch from "./components/JobSearch/JobSearch"
 import RemoteJobs from "./components/RemoteJobs/RemoteJobs"
+import {BsGlobe2} from "react-icons/bs"
+//  import { FaLaptopHouse } from 'react-icons/fa';
 import "./index.css"
 
 function App() {
@@ -54,7 +56,7 @@ function App() {
           className={`app__tab ${activeTab === "remote" ? "app__tab--active" : ""}`}
           onClick={() => setActiveTab("remote")}
         >
-          Remote Jobs 🌍
+          Remote Jobs <BsGlobe2 /> 
         </button>
       </div>
 
