@@ -1,36 +1,31 @@
+import { API_BASE_URL, getAuthHeaders } from "./api";
+
 export async function searchRemoteJobs(query = "", category = "") {
-  try {
-    let url = `/api/remotive/api/remote-jobs?limit=20`
+  const params = new URLSearchParams();
 
-    if (category) {
-      url += `&category=${encodeURIComponent(category)}`
-    }
-
-    const response = await fetch(url)
-
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`)
-    }
-
-    const data = await response.json()
-
-    // Filter results locally if query exists
-    if (query.trim()) {
-      return data.jobs.filter(
-        (job) =>
-          job.title.toLowerCase().includes(query.toLowerCase()) ||
-          job.company_name.toLowerCase().includes(query.toLowerCase()) ||
-          job.tags?.some((tag) =>
-            tag.toLowerCase().includes(query.toLowerCase())
-          )
-      )
-    }
-
-    return data.jobs
-  } catch (error) {
-    console.error("Remotive fetch failed:", error)
-    throw error
+  if (query.trim()) {
+    params.set("query", query.trim());
   }
+
+  if (category) {
+    params.set("category", category);
+  }
+
+  const response = await fetch(`${API_BASE_URL}/search/remotive?${params}`, {
+    headers: getAuthHeaders(),
+  });
+
+  const data = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    const error = new Error(
+      data.error || data.message || `API error: ${response.status}`
+    );
+    error.status = response.status;
+    throw error;
+  }
+
+  return Array.isArray(data.jobs) ? data.jobs : [];
 }
 
 export const REMOTIVE_CATEGORIES = [
@@ -46,4 +41,4 @@ export const REMOTIVE_CATEGORIES = [
   "Writing",
   "QA",
   "Finance",
-]
+];

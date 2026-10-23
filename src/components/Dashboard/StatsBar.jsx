@@ -1,55 +1,49 @@
-import { useJobs } from "../../context/JobContext"
-import "./StatsBar.css"
+import { useJobs } from "../../context/JobContext";
+import "./StatsBar.css";
 
 function StatsBar() {
-  const { jobs } = useJobs()
+  const { jobs } = useJobs();
+
+  const appliedJobs = jobs.filter((job) => job.status !== "wishlist").length;
+  const interviews = jobs.filter(
+    (job) => job.status === "interviewing"
+  ).length;
+  const offers = jobs.filter((job) => job.status === "offer").length;
+  const rejected = jobs.filter((job) => job.status === "rejected").length;
 
   const stats = [
     {
       label: "Total Applied",
-      value: jobs.length,
-      color: "#6366f1",
-      bg: "#eef2ff",
+      value: appliedJobs,
+      className: "stat-card--total",
     },
     {
       label: "Interviews",
-      value: jobs.filter((j) => j.status === "Interview").length,
-      color: "#f59e0b",
-      bg: "#fffbeb",
+      value: interviews,
+      className: "stat-card--interviewing",
     },
     {
       label: "Offers",
-      value: jobs.filter((j) => j.status === "Offer").length,
-      color: "#10b981",
-      bg: "#ecfdf5",
+      value: offers,
+      className: "stat-card--offer",
     },
     {
       label: "Rejected",
-      value: jobs.filter((j) => j.status === "Rejected").length,
-      color: "#ef4444",
-      bg: "#fef2f2",
+      value: rejected,
+      className: "stat-card--rejected",
     },
-  ]
+  ];
 
   return (
-    <div className="statsbar">
+    <section className="statsbar" aria-label="Application summary">
       {stats.map((stat) => (
-        <div
-          key={stat.label}
-          className="statsbar__card"
-          style={{ backgroundColor: stat.bg }}
-        >
-          <span
-            className="statsbar__value"
-            style={{ color: stat.color }}
-          >
-            {stat.value}
-          </span>
+        <div key={stat.label} className={`statsbar__card ${stat.className}`}>
+          <span className="statsbar__value">{stat.value}</span>
           <span className="statsbar__label">{stat.label}</span>
         </div>
       ))}
-    </div>
-  )
+    </section>
+  );
 }
 
-export default StatsBar
+export default StatsBar;

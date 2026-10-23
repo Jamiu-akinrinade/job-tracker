@@ -1,14 +1,16 @@
 import "./JobCard.css"
 
 const STATUS_COLORS = {
-  Applied: "#3b82f6",
-  Interview: "#f59e0b",
-  Offer: "#10b981",
-  Rejected: "#ef4444",
+  applied: "#3b82f6",
+  interviewing: "#f59e0b",
+  offer: "#10b981",
+  rejected: "#ef4444",
+  wishlist: "#6b7280",
+  accepted: "#8b5cf6",
 }
 
 function JobCard({ job, onDelete, onStatusChange }) {
-  const statusOptions = ["Applied", "Interview", "Offer", "Rejected"]
+  const statusOptions = ["wishlist", "applied", "interviewing", "offer", "rejected", "accepted"]
 
   return (
     <div className="job-card">
@@ -18,12 +20,14 @@ function JobCard({ job, onDelete, onStatusChange }) {
       />
 
       <div className="job-card__body">
-        <h3 className="job-card__role">{job.role}</h3>
+        {/* 1. Changed job.role to job.title */}
+        <h3 className="job-card__role">{job.title}</h3>
         <p className="job-card__company">{job.company}</p>
 
-        {job.link && (
+        {/* 2. Changed job.link to job.url */}
+        {job.url && (
           <a
-            href={job.link}
+            href={job.url}
             target="_blank"
             rel="noreferrer"
             className="job-card__link"
@@ -32,8 +36,9 @@ function JobCard({ job, onDelete, onStatusChange }) {
           </a>
         )}
 
+        {/* 3. Changed job.dateAdded to job.created_at */}
         <p className="job-card__date">
-          Added {new Date(job.dateAdded).toLocaleDateString()}
+          Added {job.created_at ? new Date(job.created_at).toLocaleDateString() : 'N/A'}
         </p>
 
         <select
@@ -43,7 +48,8 @@ function JobCard({ job, onDelete, onStatusChange }) {
         >
           {statusOptions.map((s) => (
             <option key={s} value={s}>
-              {s}
+              {/* This makes the dropdown look pretty (e.g., 'Applied') while keeping the value lowercase */}
+              {s.charAt(0).toUpperCase() + s.slice(1)}
             </option>
           ))}
         </select>

@@ -8,7 +8,6 @@ const COUNTRIES = [
   { code: "us", label: "USA" },
   { code: "ca", label: "Canada" },
   { code: "au", label: "Australia" },
-  { code: "ng", label: "Nigeria" },
 ]
 
 function JobSearch() {
@@ -21,28 +20,26 @@ function JobSearch() {
   const [saved, setSaved] = useState({})
 
   const handleSearch = async () => {
-  if (!query.trim()) return
-  setLoading(true)
-  setError("")
-  setResults([])
+    if (!query.trim()) return
+    setLoading(true)
+    setError("")
+    setResults([])
 
-  try {
-    const data = await searchJobs(query, country)
-    setResults(data)
-  } catch (err) {
-    if (country === "ng") {
-      setError("Adzuna doesn't support Nigerian listings yet. Try the Remote Jobs tab for worldwide remote roles you can apply to from Nigeria 🌍")
-    } else if (err.message.includes("401")) {
-      setError("Authentication error. Please try again later.")
-    } else if (err.message.includes("404")) {
-      setError("No results found for that search. Try a different term or country.")
-    } else {
-      setError("Something went wrong. Please check your connection and try again.")
+    try {
+      const data = await searchJobs(query, country)
+      setResults(data)
+    } catch (err) {
+      if (err.message.includes("401")) {
+        setError("Authentication error. Please try again later.")
+      } else if (err.message.includes("404")) {
+        setError("No results found for that search. Try a different term or country.")
+      } else {
+        setError("Something went wrong. Please check your connection and try again.")
+      }
+    } finally {
+      setLoading(false)
     }
-  } finally {
-    setLoading(false)
   }
-}
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") handleSearch()
@@ -51,9 +48,9 @@ function JobSearch() {
   const handleSave = (result) => {
     addJob({
       company: result.company.display_name,
-      role: result.title,
-      link: result.redirect_url,
-      status: "Applied",
+      title: result.title,
+      url: result.redirect_url,
+      status: "applied",
     })
     setSaved((prev) => ({ ...prev, [result.id]: true }))
   }
@@ -64,7 +61,7 @@ function JobSearch() {
       jobs.some(
         (j) =>
           j.company === result.company.display_name &&
-          j.role === result.title
+          j.title === result.title
       )
     )
   }
@@ -79,17 +76,30 @@ function JobSearch() {
       </div>
 
       <div className="job-search__bar">
-        <input
-          type="text"
-          placeholder="e.g. Frontend Developer"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={handleKeyDown}
-          className="job-search__input"
-        />
+        <div className="job-search__input-wrap">
+          <svg
+            className="job-search__input-icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <circle cx="11" cy="11" r="6.5" />
+            <path d="m16 16 4.5 4.5" />
+          </svg>
+          <input
+            type="text"
+            placeholder="e.g. Frontend Developer"
+            aria-label="Search jobs by keyword"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={handleKeyDown}
+            className="job-search__input"
+          />
+        </div>
 
         <select
           value={country}
+          aria-label="Choose a country"
           onChange={(e) => setCountry(e.target.value)}
           className="job-search__select"
         >
@@ -101,6 +111,7 @@ function JobSearch() {
         </select>
 
         <button
+          type="button"
           className="job-search__btn"
           onClick={handleSearch}
           disabled={loading}
@@ -109,11 +120,15 @@ function JobSearch() {
         </button>
       </div>
 
-      {error && <p className="job-search__error">{error}</p>}
+      {error && (
+        <p className="job-search__error" role="alert">
+          {error}
+        </p>
+      )}
 
       {loading && (
-        <div className="job-search__loading">
-          <div className="job-search__spinner" />
+        <div className="job-search__loading" role="status" aria-live="polite">
+          <div className="job-search__spinner" aria-hidden="true" />
           <p>Fetching live jobs...</p>
         </div>
       )}
@@ -151,6 +166,7 @@ function JobSearch() {
                   View Job ↗
                 </a>
                 <button
+                  type="button"
                   className={`job-search__save ${
                     isAlreadySaved(result) ? "job-search__save--saved" : ""
                   }`}
@@ -165,12 +181,34 @@ function JobSearch() {
         </div>
       )}
 
-      {!loading && results.length === 0 && query && !error && (
-        <p className="job-search__empty">
-          No results found. Try a different search term.
-        </p>
+      {!loading && results.length === 0 && !error && (
+        <div className="job-search__empty" aria-live="polite">
+          <div className="job-search__empty-icon" aria-hidden="true">
+            <svg viewBox="0 0 64 64" focusable="false">
+              <circle cx="27" cy="27" r="15" />
+              <path d="m38 38 14 14" />
+            </svg>
+          </div>
+
+          {query ? (
+            <>
+              <h3 className="job-search__empty-title">No jobs found</h3>
+              <p className="job-search__empty-copy">
+                Try a different role, country, or search term.
+              </p>
+            </>
+          ) : (
+            <>
+              <h3 className="job-search__empty-title">Search for your next role</h3>
+              <p className="job-search__empty-copy">
+                Enter a role, location, or job type above to discover current
+                opportunities.
+              </p>
+            </>
+          )}
+        </div>
       )}
-    </div>      
+    </div>
   )
 }
 

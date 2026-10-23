@@ -16,6 +16,10 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/remotive/, ''),
       },
+      '/api/auth': {
+        target: 'http://localhost:4000',
+        changeOrigin: true,
+      },
     },
   },
 })

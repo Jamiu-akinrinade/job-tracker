@@ -1,41 +1,82 @@
 .statsbar {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
   padding: 24px 24px 0;
-  flex-wrap: wrap;
 }
 
 .statsbar__card {
-  flex: 1;
-  min-width: 140px;
-  border-radius: 12px;
-  padding: 20px;
   display: flex;
+  min-height: 96px;
   flex-direction: column;
-  gap: 4px;
+  justify-content: center;
+  gap: 6px;
+  padding: 18px 20px;
+  border: 1px solid transparent;
+  border-radius: 14px;
 }
 
 .statsbar__value {
-  font-size: 32px;
-  font-weight: 700;
+  color: var(--color-text);
+  font-size: 30px;
+  font-weight: 800;
   line-height: 1;
 }
 
 .statsbar__label {
-  font-size: 13px;
-  color: #6b7280;
-  font-weight: 500;
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: 600;
 }
 
-@media (max-width: 480px) {
+/* Total Applied uses the brand color, not a job-status color. */
+.stat-card--total {
+  background: var(--color-primary-faint);
+  border-color: #e0e7ff;
+}
+
+.stat-card--total .statsbar__value {
+  color: var(--color-primary);
+}
+
+.stat-card--interviewing {
+  background: var(--status-interviewing-bg);
+  border-color: #fef3c7;
+}
+
+.stat-card--interviewing .statsbar__value {
+  color: var(--status-interviewing-text);
+}
+
+.stat-card--offer {
+  background: var(--status-offer-bg);
+  border-color: #d1fae5;
+}
+
+.stat-card--offer .statsbar__value {
+  color: var(--status-offer-text);
+}
+
+.stat-card--rejected {
+  background: var(--status-rejected-bg);
+  border-color: #fee2e2;
+}
+
+.stat-card--rejected .statsbar__value {
+  color: var(--status-rejected-text);
+}
+
+@media (max-width: 720px) {
   .statsbar {
-    padding: 16px 16px 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
+    padding: 18px 16px 0;
   }
 
   .statsbar__card {
-    min-width: calc(50% - 5px);
+    min-height: 82px;
     padding: 14px;
+    border-radius: 12px;
   }
 
   .statsbar__value {

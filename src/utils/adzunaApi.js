@@ -1,23 +1,25 @@
-console.log("ID:", import.meta.env.VITE_ADZUNA_APP_ID)
-console.log("Key:", import.meta.env.VITE_ADZUNA_APP_KEY)
-
-const APP_ID = import.meta.env.VITE_ADZUNA_APP_ID
-const APP_KEY = import.meta.env.VITE_ADZUNA_APP_KEY
+import { API_BASE_URL, getAuthHeaders } from "./api";
 
 export async function searchJobs(query, country = "gb", page = 1) {
-  try {
-    const url = `/api/adzuna/v1/api/jobs/${country}/search/${page}?app_id=${APP_ID}&app_key=${APP_KEY}&results_per_page=10&what=${encodeURIComponent(query)}&content-type=application/json`
+  const params = new URLSearchParams({
+    query: query.trim(),
+    country,
+    page: String(page),
+  });
 
-    const response = await fetch(url)
+  const response = await fetch(`${API_BASE_URL}/search/adzuna?${params}`, {
+    headers: getAuthHeaders(),
+  });
 
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`)
-    }
+  const data = await response.json().catch(() => ({}));
 
-    const data = await response.json()
-    return data.results
-  } catch (error) {
-    console.error("Adzuna fetch failed:", error)
-    throw error
+  if (!response.ok) {
+    const error = new Error(
+      data.error || data.message || `API error: ${response.status}`
+    );
+    error.status = response.status;
+    throw error;
   }
+
+  return Array.isArray(data.results) ? data.results : [];
 }
